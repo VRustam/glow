@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "456116116150",
+    "project_id": "glow-fe37f",
+    "storage_bucket": "glow-fe37f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456116116150:android:68bdcf9a4102a382b96417",
+        "android_client_info": {
+          "package_name": "com.valizadarustam.glow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456116116150-ok9fidv30c8uej9ejus3m49p2uisv4hj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNBAXGHOLSLzlb1A47-faO5EColRqGpKo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456116116150-ok9fidv30c8uej9ejus3m49p2uisv4hj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
