@@ -2,7 +2,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:glow/pages/home_page.dart';
+import 'package:glow/service/auth_service.dart';
 import 'package:glow/service/database_service.dart';
+import 'package:glow/widgets/widgets.dart';
 
 class GroupInfo extends StatefulWidget {
   final String groupId;
@@ -16,6 +19,7 @@ class GroupInfo extends StatefulWidget {
 }
 
 class _GroupInfoState extends State<GroupInfo> {
+  AuthService authService = AuthService();
 
   Stream? members;
 
@@ -42,6 +46,7 @@ class _GroupInfoState extends State<GroupInfo> {
   String getId(String res){
     return res.substring(0, res.indexOf("_"));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +58,39 @@ class _GroupInfoState extends State<GroupInfo> {
             .primaryColor,
         title: Text("Group Info"),
         actions: [
-          IconButton(onPressed: () {},
+          IconButton(onPressed: () {
+
+            showDialog(
+              barrierDismissible: false,
+                context: context,
+                builder: (context){
+                return AlertDialog(
+                  title: Text("Exit"),
+                  content: Text("Are you sure you exit the group?"),
+                  actions: [
+                    IconButton(
+                        onPressed: (){
+                          Navigator.pop(context);
+                        }
+                        , icon: Icon(Icons.cancel, color: Colors.red,),
+                    ),
+                    IconButton(
+                        onPressed: (){
+                           DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+                               .toggleGroupJoin(widget.groupName, widget.groupId, getName(widget.adminName)).whenComplete((){
+                                       nextScreenReplace(context, HomePage());
+                           });
+
+                        },
+                        icon: Icon(Icons.done, color: Colors.green,),)
+
+                  ],
+
+                ) ;
+
+                } );
+
+          },
               icon: Icon(Icons.exit_to_app))
         ],
       ),
