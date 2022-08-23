@@ -133,10 +133,47 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       body: Container(
-        child: Center(
-          child: Text("Profile",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 27, fontWeight: FontWeight.bold),),
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 170),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:<Widget>[
+              Icon(
+                Icons.account_circle,
+                size: 200,
+                color: Theme.of(context).primaryColor,
+              ),
+              SizedBox(height: 15,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Full Name", style: TextStyle(fontSize: 17),),
+                  Text(
+                    widget.userName,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              Divider(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:<Widget>[
+                  Text("Email", style: TextStyle(fontSize: 17),),
+                  Text(
+                    widget.email,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+
+            ]
         ),
       ),
     );
