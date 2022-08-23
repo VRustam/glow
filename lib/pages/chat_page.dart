@@ -7,11 +7,17 @@ import 'package:glow/service/database_service.dart';
 import 'package:glow/widgets/message_tile.dart';
 import 'package:glow/widgets/widgets.dart';
 
+
 class ChatPage extends StatefulWidget {
   final String groupId;
   final String groupName;
   final String userName;
-  const ChatPage({Key? key, required this.groupId, required this.groupName, required this.userName}) : super(key: key);
+  const ChatPage(
+      {Key? key,
+        required this.groupId,
+        required this.groupName,
+        required this.userName})
+      : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -28,131 +34,125 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
   }
 
-  getChatandAdmin(){
-      DatabaseService().getChats(widget.groupId).then((val){
-        setState(() {
-          chats = val;
-        });
+  getChatandAdmin() {
+    DatabaseService().getChats(widget.groupId).then((val) {
+      setState(() {
+        chats = val;
       });
-      DatabaseService().getGroupAdmin(widget.groupId).then((val){
-        setState(() {
-          admin = val;
-        });
+    });
+    DatabaseService().getGroupAdmin(widget.groupId).then((val) {
+      setState(() {
+        admin = val;
       });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title:Text(widget.groupName),
+        title: Text(widget.groupName),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
           IconButton(
-            icon: Icon(Icons.info),
-            onPressed: (){
-              nextScreen(context, GroupInfo(
-                groupId: widget.groupId,
-                groupName: widget.groupName,
-                adminName: admin,
-              ));
-            },
-          )
+              onPressed: () {
+                nextScreen(
+                    context,
+                    GroupInfo(
+                      groupId: widget.groupId,
+                      groupName: widget.groupName,
+                      adminName: admin,
+                    ));
+              },
+              icon: const Icon(Icons.info))
         ],
       ),
       body: Stack(
-        children:<Widget>[
+        children: <Widget>[
+          // chat messages here
           chatMessages(),
           Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
             child: Container(
-              padding:EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               width: MediaQuery.of(context).size.width,
               color: Colors.grey[700],
-              child:Row(
-                children:[
-                  Expanded(
-                    child:TextField(
+              child: Row(children: [
+                Expanded(
+                    child: TextFormField(
                       controller: messageController,
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                      decoration:InputDecoration(
-                        hintText: "Send a message",
-                        hintStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16
-                        ),
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        hintText: "Send a message...",
+                        hintStyle: TextStyle(color: Colors.white, fontSize: 16),
                         border: InputBorder.none,
                       ),
+                    )),
+                const SizedBox(
+                  width: 12,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    sendMessage();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                  ),
-                  SizedBox(width: 12),
-                  GestureDetector(
-                    onTap: (){
-
-                      sendMessage();
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration:BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child:Center(
-                        child:Icon(
+                    child: const Center(
+                        child: Icon(
                           Icons.send,
                           color: Colors.white,
-                        ),
-                        )
-                      ),
+                        )),
                   ),
-
-
-                ]
-              ),
+                )
+              ]),
             ),
-          ),
-
-        ]
+          )
+        ],
       ),
-
-
     );
   }
-  chatMessages(){
+
+  chatMessages() {
     return StreamBuilder(
       stream: chats,
-        builder: (context, AsyncSnapshot snapshot){
-        return snapshot.hasData ? ListView.builder(
-          itemCount: snapshot.data.documents.length,
-          itemBuilder: (context, index){
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+          itemCount: snapshot.data.docs.length,
+          itemBuilder: (context, index) {
             return MessageTile(
                 message: snapshot.data.docs[index]['message'],
                 sender: snapshot.data.docs[index]['sender'],
-                sentByMe: widget.userName == snapshot.data.docs[index]['sender']);
-                },
-           )
+                sentByMe: widget.userName ==
+                    snapshot.data.docs[index]['sender']);
+          },
+        )
             : Container();
-        }
-        );
+      },
+    );
   }
-  sendMessage(){
-    if(messageController.text.isNotEmpty){
-     Map<String,dynamic> chatMessageMap = {
-       "sender":widget.userName,
-       "message":messageController.text,
-       "time":DateTime.now().microsecondsSinceEpoch
-     };
 
-     DatabaseService().sendMessage(widget.groupId, chatMessageMap);
-     setState(() {
-       messageController.clear();
-     });
+  sendMessage() {
+    if (messageController.text.isNotEmpty) {
+      Map<String, dynamic> chatMessageMap = {
+        "message": messageController.text,
+        "sender": widget.userName,
+        "time": DateTime.now().millisecondsSinceEpoch,
+      };
+
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+      setState(() {
+        messageController.clear();
+      });
     }
   }
 }
+
